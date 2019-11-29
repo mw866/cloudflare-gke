@@ -56,7 +56,7 @@ spec:
         image:  mw866/cloudflared:latest
         imagePullPolicy: IfNotPresent
         command: ["cloudflared", "tunnel"]
-        args: ["--url", "http://127.0.0.1:80", "--hostname", "k8s.chriswang.me", "--origincert", "/etc/cloudflared/cert.pem", "--no-autoupdate"]
+        args: ["--url", "http://127.0.0.1:80", "--hostname", "k8s.chriswang.me", "--origincert", "/etc/cloudflared/cert.pem", "--no-autoupdate", "--lb-pool", "k8s-sidecar"]
         env:
         - name: POD_NAME
           valueFrom:

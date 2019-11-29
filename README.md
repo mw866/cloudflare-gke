@@ -6,7 +6,8 @@ kubectl create -f sidecar.yaml
 kubectl apply -f sidecar.yaml
 kubectl get pods
 kubectl describe pods
-k logs hello-78cd6696d-wd8sg tunnel
+kubectl logs hello-78cd6696d-wd8sg tunnel
+kubectl top node
 ```
 
 
