@@ -1,0 +1,53 @@
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: cwang-gke-ingress
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: cwang-gke-ingress-static-ip
+    kubernetes.io/ingress.allow-http: "true"
+
+spec:
+  backend:
+    serviceName: cwang-gke-ingress-service
+    servicePort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: cwang-gke-ingress-app
+  name: cwang-gke-ingress-service
+spec:
+  type: NodePort
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 80
+    protocol: TCP
+  selector:
+    app: cwang-gke-ingress-app
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: cwang-gke-ingress-app
+  name: cwang-gke-ingress-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cwang-gke-ingress-app
+  template:
+    metadata:
+      labels:
+        app: cwang-gke-ingress-app
+    spec:
+      containers:
+      - name: cwang-gke-ingress-httpbin-container
+        image: kennethreitz/httpbin
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+---
