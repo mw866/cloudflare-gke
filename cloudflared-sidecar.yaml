@@ -1,0 +1,52 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: cwang-cloudflared-sidecar-app
+  name: cwang-cloudflared-sidecar-service
+spec:
+  ports:
+  - name: http
+    port: 8080
+    protocol: TCP
+  selector:
+    app: cwang-cloudflared-sidecar-app
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: cwang-cloudflared-sidecar-app
+  name: cwang-cloudflared-sidecar-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cwang-cloudflared-sidecar-app
+  template:
+    metadata:
+      labels:
+        app: cwang-cloudflared-sidecar-app
+    spec:
+      containers:
+      - name: cwang-cloudflared-sidecar-httpbin-container
+        image: kennethreitz/httpbin
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+      - name: cwang-cloudflared-sidecar-tunnel-container
+        image:  mw866/cloudflared:latest
+        imagePullPolicy: IfNotPresent
+        command: ["cloudflared", "tunnel"]
+        args: ["--url", "http://127.0.0.1:80", "--hostname", "cloudflared-sidecar.chriswang.me", "--origincert", "/etc/cloudflared/cert.pem", "--no-autoupdate", "--lb-pool", "k8s-sidecar"]
+        volumeMounts:
+        - mountPath: /etc/cloudflared
+          name: cwang-cloudflared-sidecar-tunnel-secret
+          readOnly: true
+      terminationGracePeriodSeconds: 60
+      volumes:
+      - name: cwang-cloudflared-sidecar-tunnel-secret
+        secret:
+          secretName: chriswang.me
+---
