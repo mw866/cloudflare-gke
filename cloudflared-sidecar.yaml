@@ -48,5 +48,5 @@ spec:
       volumes:
       - name: cwang-cloudflared-sidecar-tunnel-secret
         secret:
-          secretName: chriswang.me
+          secretName: cloudflared-cert
 ---
