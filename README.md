@@ -31,7 +31,7 @@ Some proof-of-concepts that demonstrate how Cloudflare can work with GKE.
 
 ## `cloudflared-sidecar.yaml`:  Cloudflare Argo Tunnel in Sidecar Model with Cloudflare Load Balancer
 ### Architecture
-![cloudflared-sidecar](./images/cloudflared-sidecar.jpg)
+![cloudflared-sidecar](./images/cloudflared-sidecar.JPG)
 
 
 
@@ -54,7 +54,7 @@ Solution: remove resource limit
 ## `gke-ingress.yaml `: Cloudflare with GKE Ingress with GKE External Load Balancer
 
 ### Architecture: 
-![gke-ingress](./images/gke-ingress.jpg)
+![gke-ingress](./images/gke-ingress.JPG)
 
 
 ### Integration with Cloudflare
@@ -83,7 +83,7 @@ Just set the Network Service Tier to Premium.
 ## `cloudflared-trailer.yaml`: Cloudflare Argo Tunnel in "Trailer" mode without Cloudflare Load Balancer or GCP Forwarding Rule
 
 ### Architecture: 
-![cloudflared-trailer](./images/cloudflared-trailer.jpg)
+![cloudflared-trailer](./images/cloudflared-trailer.JPG)
 
 ### Integration with Cloudflare
 
