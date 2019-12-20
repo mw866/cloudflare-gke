@@ -56,7 +56,7 @@ spec:
         image:  mw866/cloudflared:latest
         imagePullPolicy: IfNotPresent
         command: ["cloudflared", "tunnel"]
-        args: ["--url", "$(CWANG_CLOUDFLARED_TRAILER_SERVICE_SERVICE_HOST):$(CWANG_CLOUDFLARED_TRAILER_SERVICE_SERVICE_PORT)", "--hostname", "cloudflared-trailer.chriswang.me", "--origincert", "/etc/cloudflared/cert.pem", "--no-autoupdate"]
+        args: ["--url", "$(CWANG_CLOUDFLARED_TRAILER_SERVICE_SERVICE_HOST):$(CWANG_CLOUDFLARED_TRAILER_SERVICE_SERVICE_PORT)", "--hostname", "cloudflared-trailer.chriswang.me", "--origincert", "/etc/cloudflared/cert.pem", "--no-autoupdate", "--lb-pool", "cloudflared-trailer"]
         volumeMounts:
         - mountPath: /etc/cloudflared
           name: cwang-cloudflared-trailer-tunnel-secret
