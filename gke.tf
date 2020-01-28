@@ -1,10 +1,11 @@
 variable "resource_prefix" {
   type = string
-  description = "The prefix uniquely identifies your resources. e.g. username"
+  description = "Enter a prefix that uniquely identifies your resources. e.g. username"
 }
 
 variable "gcp_project_id" {
   type = string
+  description = "Enter the Google Cloud Project IP"
 }
 variable "gcp_region" {
   type    = string

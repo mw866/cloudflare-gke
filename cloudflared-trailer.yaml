@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: cwang-cloudflared-trailer-service
+  name: cloudflared-trailer-service
 spec:
   ports:
   - port: 80
@@ -9,27 +9,27 @@ spec:
     protocol: TCP
     targetPort: 80
   selector:
-    app: cwang-cloudflared-trailer-httpbin-app
+    app: cloudflared-trailer-httpbin-app
   type: ClusterIP
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    app: cwang-cloudflared-trailer-httpbin-app
-  name: cwang-cloudflared-trailer-httpbin-deployment
+    app: cloudflared-trailer-httpbin-app
+  name: cloudflared-trailer-httpbin-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: cwang-cloudflared-trailer-httpbin-app
+      app: cloudflared-trailer-httpbin-app
   template:
     metadata:
       labels:
-        app: cwang-cloudflared-trailer-httpbin-app
+        app: cloudflared-trailer-httpbin-app
     spec:
       containers:
-      - name: cwang-cloudflared-trailer-httpbin-container
+      - name: cloudflared-trailer-httpbin-container
         image: kennethreitz/httpbin
         imagePullPolicy: IfNotPresent
         ports:
@@ -39,31 +39,31 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    app: cwang-cloudflared-trailer-tunnel-app
-  name: cwang-cloudflared-trailer-tunnel-deployment
+    app: cloudflared-trailer-tunnel-app
+  name: cloudflared-trailer-tunnel-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: cwang-cloudflared-trailer-tunnel-app
+      app: cloudflared-trailer-tunnel-app
   template:
     metadata:
       labels:
-        app: cwang-cloudflared-trailer-tunnel-app
+        app: cloudflared-trailer-tunnel-app
     spec:
       containers:    
-      - name: cwang-cloudflared-trailer-tunnel-container
+      - name: cloudflared-trailer-tunnel-container
         image:  mw866/cloudflared:latest
         imagePullPolicy: IfNotPresent
         command: ["cloudflared", "tunnel"]
-        args: ["--url", "$(CWANG_CLOUDFLARED_TRAILER_SERVICE_SERVICE_HOST):$(CWANG_CLOUDFLARED_TRAILER_SERVICE_SERVICE_PORT)", "--hostname", "cloudflared-trailer.chriswang.me", "--origincert", "/etc/cloudflared/cert.pem", "--no-autoupdate", "--lb-pool", "cloudflared-trailer"]
+        args: ["--url", "$(CLOUDFLARED_TRAILER_SERVICE_SERVICE_HOST):$(CLOUDFLARED_TRAILER_SERVICE_SERVICE_PORT)", "--hostname", "cloudflared-trailer.chriswang.me", "--origincert", "/etc/cloudflared/cert.pem", "--no-autoupdate", "--lb-pool", "cloudflared-trailer"]
         volumeMounts:
         - mountPath: /etc/cloudflared
-          name: cwang-cloudflared-trailer-tunnel-secret
+          name: cloudflared-trailer-tunnel-secret
           readOnly: true
       terminationGracePeriodSeconds: 60
       volumes:
-      - name: cwang-cloudflared-trailer-tunnel-secret
+      - name: cloudflared-trailer-tunnel-secret
         secret:
           secretName: cloudflared-cert
 ---

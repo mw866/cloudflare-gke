@@ -5,31 +5,50 @@ Some proof-of-concepts that demonstrate how Cloudflare can work with GKE.
 ## Getting started
 
 ### Step 0: Prerequisites: 
-* `gcloud` and GCP account
-* `terraform` 
-* Cloudflare account with Argo enabled. 
+* Google Cloud account
+* [Google Cloud SDK with `gcloud` & `kubectl` CLI tools]((https://www.terraform.io/downloads.html))
+* [Terraform with `terraform` CLI tools](https://www.terraform.io/downloads.html)
+* Cloudflare account with Argo enabled
 
 ### Step 1: Bootstrap the GKE environment with Terraform
-1.1: Set the input variables by updating `gke.tf` with  or `export TF_VAR_resource_prefix=PREFIX` & `export TF_VAR_gcp_project_id=GCP_PROJECT_ID`
+1.1 Initialize Terraform
+```terraform init```
 
-1.2: Check the output of `terraform plan`
+1.2 Plan Terraform and verify the plan
+```terraform plan```
 
-1.3: Run `terraform run` and wait
+(Optional) Set the input variables as environment variables if you want want to keep entering them every time you plan 
+```
+export TF_VAR_resource_prefix=<PREFIX>
+export TF_VAR_gcp_project_id=<GCP_PROJECT_ID>
+```
+
+1.3 Apply the Terraform plan
+
+```
+terraform apply
+```
+It takes  > 10 minutes.
+
 
 ### Step 2: Deploy your workloads to to the GKE environement with `kubectl`
 
 2.1 Connect to the cluster
-`gcloud container clusters get-credentials CLUSTER_NAME ` or follow the instructions in GCP Console -> Kubernetes Engine ->  Clusters
+Follow the instructions in GCP Console -> Kubernetes Engine ->  Cluster -> Connect
+OR run 
+
+```
+gcloud container clusters get-credentials <CLUSTER_NAME>
+``` 
 
 2.2 Run some kubectl to make sure it's configured correctly.
-`kubectl config get-contex`
+```kubectl config get-contexts```
 
+2.3 The foundation has been laid. The real fun starts from here...
 
-2.3 The foundation has been laid. The fun starts from here...
+## Deployment Mode 1: Cloudflare Argo Tunnel in Sidecar Model with Cloudflare Load Balancer
+`cloudflared-sidecar.yaml`
 
-
-
-## `cloudflared-sidecar.yaml`:  Cloudflare Argo Tunnel in Sidecar Model with Cloudflare Load Balancer
 ### Architecture
 ![cloudflared-sidecar](./images/cloudflared-sidecar.JPG)
 
@@ -37,9 +56,19 @@ Some proof-of-concepts that demonstrate how Cloudflare can work with GKE.
 
 ### Integration with Cloudflare
 
-1. `kubectl create secret generic cloudflared-cert --from-file="$HOME/.cloudflared/cert.pem"`
-2. `k apply  -f cloudflared-sidecar.yaml`
-3. Check Cloudflare dashboard > Traffic > Argo Tunnel
+1. Login in to Cloudflare Argo Tunnel 
+
+```cloudflared tunnel login```
+
+2. Load the cert to the K8s secret store
+
+```kubectl create secret generic cloudflared-cert --from-file="$HOME/.cloudflared/cert.pem"```
+
+3. Apply the deployment
+
+```kubectl apply  -f cloudflared-sidecar.yaml```
+
+4. Check Cloudflare dashboard > Traffic > Argo Tunnel
 
 ### References
 * [Argo Tunnel K8S Sidecar Guide](https://developers.cloudflare.com/argo-tunnel/reference/sidecar/)
@@ -51,7 +80,8 @@ Solution: remove resource limit
 
 
 
-## `gke-ingress.yaml `: Cloudflare with GKE Ingress with GKE External Load Balancer
+## Deployment Mode 2: Cloudflare with GKE Ingress with GKE External Load Balancer
+ `gke-ingress.yaml`
 
 ### Architecture: 
 ![gke-ingress](./images/gke-ingress.JPG)
@@ -59,8 +89,14 @@ Solution: remove resource limit
 
 ### Integration with Cloudflare
 
-1. Run `k apply -f gke-ingress.yaml`
-2. Get the external IP address with `kubectl get ingress`  
+1. Apply the deployment 
+
+```kubectl apply -f gke-ingress.yaml```
+
+2. Get the external IP address 
+
+```kubectl get ingress```
+
 3. Add it to Cloudflare DNS as an origin 
 
 ### References
@@ -80,15 +116,26 @@ Just set the Network Service Tier to Premium.
 [Using Network Service Tiers](https://cloud.google.com/network-tiers/docs/using-network-service-tiers)
 
 
-## `cloudflared-trailer.yaml`: Cloudflare Argo Tunnel in "Trailer" mode without Cloudflare Load Balancer or GCP Forwarding Rule
+## Deployment Mode 3: Cloudflare Argo Tunnel in "Trailer" mode without Cloudflare Load Balancer or GCP Forwarding Rule
+`cloudflared-trailer.yaml`
 
 ### Architecture: 
 ![cloudflared-trailer](./images/cloudflared-trailer.JPG)
 
 ### Integration with Cloudflare
 
-1. `kubectl create secret generic cloudflared-cert --from-file="$HOME/.cloudflared/cert.pem"`
-1. Run `k apply  -f cloudflared-trailer.yaml`
+1. Login in to Cloudflare Argo Tunnel 
+
+```cloudflared tunnel login```
+
+2. Load the cert to the K8s secret store
+
+```kubectl create secret generic cloudflared-cert --from-file="$HOME/.cloudflared/cert.pem"```
+
+3. Apply the deployment
+
+```kubectl apply -f cloudflared-trailer.yaml```
+
 3. Check Cloudflare dashboard > Traffic > Argo Tunnel
 
 ### Error - cloudflared listening to service
@@ -120,7 +167,7 @@ Events:  <none>
 ## References
 
 ### Misc
-* [My unofficial `cloudflared` build](https://hub.docker.com/repository/docker/mw866/cloudflared)
+* [My unofficial `cloudflared` build](https://hub.docker.com/r/mw866/cloudflared)
 * [Merging an upstream repository into your fork](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/merging-an-upstream-repository-into-your-fork)
 
 ### GKE and Kubernetes
