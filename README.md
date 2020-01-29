@@ -11,16 +11,20 @@ Some proof-of-concepts that demonstrate how Cloudflare can work with GKE.
 * Cloudflare account with Argo enabled
 
 ### Step 1: Bootstrap the GKE environment with Terraform
+
 1.1 Initialize Terraform
 ```terraform init```
 
 1.2 Plan Terraform and verify the plan
 ```terraform plan```
 
-(Optional) Set the input variables as environment variables if you want want to keep entering them every time you plan 
+(Optional) Set the variables as environment variables if you want want to entering them interactively every time you plan.
+For example,
 ```
-export TF_VAR_resource_prefix=<PREFIX>
-export TF_VAR_gcp_project_id=<GCP_PROJECT_ID>
+# Read from the local user name
+export TF_VAR_resource_prefix=$USER
+# Read from gcloud default project id
+export TF_VAR_gcp_project_id=$(gcloud config get-value project)
 ```
 
 1.3 Apply the Terraform plan
@@ -28,10 +32,9 @@ export TF_VAR_gcp_project_id=<GCP_PROJECT_ID>
 ```
 terraform apply
 ```
-It takes  > 10 minutes.
+It will takes  > 10 minutes. 
 
-
-### Step 2: Deploy your workloads to to the GKE environement with `kubectl`
+### Step 2: Deploy your workloads to to the GKE environment with `kubectl`
 
 2.1 Connect to the cluster
 Follow the instructions in GCP Console -> Kubernetes Engine ->  Cluster -> Connect
@@ -170,6 +173,11 @@ Events:  <none>
 * [My unofficial `cloudflared` build](https://hub.docker.com/r/mw866/cloudflared)
 * [Merging an upstream repository into your fork](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/merging-an-upstream-repository-into-your-fork)
 
+
+### Google Cloud
+
+* [gcloud auth application-default login](https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login)
+
 ### GKE and Kubernetes
 
 * [Labels & Selectors](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/)
@@ -179,10 +187,11 @@ Events:  <none>
 * [Labels, Selectors, and MatchingLabels](https://medium.com/@zwhitchcox/matchlabels-labels-and-selectors-explained-in-detail-for-beginners-d421bdd05362)
 
 
-### Terraform with GKE
+### Terraform 
 
 * [Official Terraform docs on `google_container_cluster`](https://www.terraform.io/docs/providers/google/r/container_cluster.html)
 * [Learn Terraform (with GCP)](https://learn.hashicorp.com/terraform/gcp/intro)
+* [Modules Overview](https://learn.hashicorp.com/terraform/modules/modules-overview)
 
 ### `kubectl` Cheatsheet 
 ```
