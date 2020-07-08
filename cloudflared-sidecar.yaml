@@ -36,7 +36,7 @@ spec:
         ports:
         - containerPort: 80
       - name: cloudflared-sidecar-tunnel-container
-        image:  mw866/cloudflared:latest
+        image:  cloudflare/cloudflared:2020.7.1
         imagePullPolicy: IfNotPresent
         command: ["cloudflared", "tunnel"]
         args: ["--url", "http://127.0.0.1:80", "--hostname", "cloudflared-sidecar.chriswang.me", "--origincert", "/etc/cloudflared/cert.pem", "--no-autoupdate", "--lb-pool", "cloudflared-sidecar"]
